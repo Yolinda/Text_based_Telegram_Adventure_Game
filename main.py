@@ -23,14 +23,6 @@ with open('data.json', 'r') as myfile:
 # parse file
 scenes = json.loads(scene_story)
 
-# Loop through different scenes
-for scene_story in scenes:
-   if scene_story == 'scene_2':
-    print(scenes[scene_story]['intro'])
-    print(scenes[scene_story]['story'])
-    print(scenes[scene_story]['option_1']['text'])
-    print("END OF ", scene_story)
-
 # Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -40,11 +32,13 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
+COUNT = 1
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with three inline buttons attached."""
 
     for scene_story in scenes:
-        if scene_story == 'scene_1':
+        if scene_story == '1':
 
             keyboard = [
                 [
@@ -55,12 +49,23 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
             reply_markup = InlineKeyboardMarkup(keyboard)
 
-            await update.message.reply_text("Please choose:", reply_markup=reply_markup)
+            await update.message.reply_text(
+                scenes[scene_story]['intro']
+            )
 
-
+            await update.message.reply_text(
+                scenes[scene_story]['story'], 
+                reply_markup=reply_markup
+            )
+            
 async def game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Parses the CallbackQuery and updates the message text."""
-    
+
+    # Build scene to display
+    global COUNT
+    COUNT = COUNT + 1
+    display_scene = str(COUNT)
+
     # Get the option selected by the player
     query = update.callback_query
 
@@ -70,43 +75,28 @@ async def game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     # Create the various scenes
     """ Section A: Explore the Cell """
-    if query.data == "scene_1":
-        # Create options
-        keyboard = [
-            [
-                InlineKeyboardButton("Escape Through the Window", callback_data="section_a"),
-                InlineKeyboardButton("Hide Under the Bed", callback_data="section_b"),
-            ],
-        ]
+    #if query.data == "scene_1":
 
-        reply_markup = InlineKeyboardMarkup(keyboard)
+    for scene_story in scenes:
+        if scene_story == display_scene:
+            # Create options
+            keyboard = [
+                [
+                    InlineKeyboardButton(scenes[scene_story]['option_1']['text'], callback_data=scenes[scene_story]['option_1']['link']),
+                    InlineKeyboardButton(scenes[scene_story]['option_2']['text'], callback_data=scenes[scene_story]['option_2']['link']),
+                ]
+            ]
 
-        await query.message.reply_text(
-            text="What do you do next?", 
-            reply_markup=reply_markup
-        )
+            reply_markup = InlineKeyboardMarkup(keyboard)
 
-    elif query.data == "scene_2":
-        """ Section B: Call for Help """
+            await query.message.reply_text(
+                scenes[scene_story]['intro']
+            )
 
-        # Create options
-        keyboard = [
-            [
-                InlineKeyboardButton("Approach the Door", callback_data="section_a"),
-                InlineKeyboardButton("Stay Back", callback_data="section_b"),
-            ],
-        ]
-
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        
-        # Define Display Text
-
-        await query.message.reply_text(
-            text="what do you do next?", 
-            reply_markup=reply_markup
-        )
-    
-
+            await query.message.reply_text(
+                scenes[scene_story]['story'], 
+                reply_markup=reply_markup
+            )
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Displays info on how to use the bot."""
