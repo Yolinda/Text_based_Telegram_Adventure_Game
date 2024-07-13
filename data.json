@@ -1,0 +1,26 @@
+{
+    "scene_1": {
+            "intro":"Scene 1 introduction",
+            "story":"Scene 1",
+            "option_1": {
+                "text": "Scene 1: Option 1",
+                "link": "scene_1"
+            },
+            "option_2": {
+                "text": "Text here",
+                "link": "scene_2"
+            }
+    },
+    "scene_2": {
+            "intro":"Scene 2 introduction",
+            "story":"Scene 2",
+            "option_1": {
+                "text": "Scene 2: Option 1",
+                "link": "scene_1"
+            },
+            "option_2": {
+                "text": "Text here",
+                "link": "scene_2"
+            }
+    }
+}

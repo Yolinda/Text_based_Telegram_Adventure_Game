@@ -15,6 +15,22 @@ config.sections()
 
 TELEGRAM_TOKEN = config['API_KEYS']['Telegram_token']
 
+# Import story from JSON file
+# read file
+with open('data.json', 'r') as myfile:
+   scene_story = myfile.read()
+
+# parse file
+scenes = json.loads(scene_story)
+
+# Loop through different scenes
+for scene_story in scenes:
+   if scene_story == 'scene_2':
+    print(scenes[scene_story]['intro'])
+    print(scenes[scene_story]['story'])
+    print(scenes[scene_story]['option_1']['text'])
+    print("END OF ", scene_story)
+
 # Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -24,19 +40,22 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with three inline buttons attached."""
-    keyboard = [
-        [
-            InlineKeyboardButton("Option 1", callback_data="section_a"),
-            InlineKeyboardButton("Option 2", callback_data="section_b"),
-        ]
-    ]
 
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    for scene_story in scenes:
+        if scene_story == 'scene_1':
 
-    await update.message.reply_text("Please choose:", reply_markup=reply_markup)
+            keyboard = [
+                [
+                    InlineKeyboardButton(scenes[scene_story]['option_1']['text'], callback_data=scenes[scene_story]['option_1']['link']),
+                    InlineKeyboardButton(scenes[scene_story]['option_2']['text'], callback_data=scenes[scene_story]['option_2']['link']),
+                ]
+            ]
+
+            reply_markup = InlineKeyboardMarkup(keyboard)
+
+            await update.message.reply_text("Please choose:", reply_markup=reply_markup)
 
 
 async def game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -51,7 +70,7 @@ async def game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     # Create the various scenes
     """ Section A: Explore the Cell """
-    if query.data == "section_a":
+    if query.data == "scene_1":
         # Create options
         keyboard = [
             [
@@ -67,7 +86,7 @@ async def game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             reply_markup=reply_markup
         )
 
-    elif query.data == "section_b":
+    elif query.data == "scene_2":
         """ Section B: Call for Help """
 
         # Create options
