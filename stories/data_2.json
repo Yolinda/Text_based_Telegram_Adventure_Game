@@ -1,0 +1,38 @@
+{
+    "1": {
+            "intro":"STORY 2",
+            "story":"Scene info",
+            "option_1": {
+                "text": "Go to scene 1",
+                "link": "1"
+            },
+            "option_2": {
+                "text": "Go to scene 2",
+                "link": "2"
+            }
+    },
+    "2": {
+            "intro":"What?",
+            "story":"Scene 2",
+            "option_1": {
+                "text": "Go to scene 1",
+                "link": "1"
+            },
+            "option_2": {
+                "text": "Go to scene 3",
+                "link": "3"
+            }
+    },
+    "3": {
+            "intro":"Scene 3 introduction",
+            "story":"Scene 3",
+            "option_1": {
+                "text": "Scene 1",
+                "link": "1"
+            },
+            "option_2": {
+                "text": "Scene 2",
+                "link": "2"
+            }
+    }
+}

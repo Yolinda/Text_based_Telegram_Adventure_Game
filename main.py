@@ -1,3 +1,5 @@
+# Import packages
+import os
 import json
 import random
 import logging
@@ -14,10 +16,19 @@ config.read('config.ini')
 config.sections()
 
 TELEGRAM_TOKEN = config['API_KEYS']['Telegram_token']
+SLEEP_TIME = int(config['DEFAULT']['Sleep_Time'])
 
-# Import story from JSON file
+""" Import story from JSON file """
+# count number of files in stories folder
+lst = os.listdir('stories/') # your directory path
+number_of_stories = len(lst)
+
+# Select a random story
+number = str(random.randint(1,number_of_stories))
+story_file = str('stories/data_' + number + '.json')
+
 # read file
-with open('data.json', 'r') as myfile:
+with open(story_file, 'r') as myfile:
    scene_story = myfile.read()
 
 # parse file
@@ -31,8 +42,6 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
-
-COUNT = 1
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with three inline buttons attached."""
@@ -49,23 +58,34 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
             reply_markup = InlineKeyboardMarkup(keyboard)
 
-            await update.message.reply_text(
-                scenes[scene_story]['intro']
-            )
+            intro = scenes[scene_story]['intro'].split("|")
 
-            await update.message.reply_text(
-                scenes[scene_story]['story'], 
-                reply_markup=reply_markup
-            )
+            for intro_paragraph in intro:
+
+                await update.message.reply_text(
+                    intro_paragraph
+                )
+                time.sleep(SLEEP_TIME)
+
+            story = scenes[scene_story]['story'].split("|")
+
+            for story_paragraph in story:
+
+                await update.message.reply_text(
+                    story_paragraph
+                )
+
+                time.sleep(SLEEP_TIME)
+
+            if scenes[scene_story]['option_1']['link'] != "" and scenes[scene_story]['option_2']['link'] != "":
+                await update.message.reply_text(
+                    "What next?", 
+                    reply_markup=reply_markup
+                )
             
 async def game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Parses the CallbackQuery and updates the message text."""
-
-    # Build scene to display
-    global COUNT
-    COUNT = COUNT + 1
-    display_scene = str(COUNT)
-
+    
     # Get the option selected by the player
     query = update.callback_query
 
@@ -76,6 +96,7 @@ async def game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Create the various scenes
     """ Section A: Explore the Cell """
     #if query.data == "scene_1":
+    display_scene = query.data
 
     for scene_story in scenes:
         if scene_story == display_scene:
@@ -90,13 +111,31 @@ async def game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             reply_markup = InlineKeyboardMarkup(keyboard)
 
             await query.message.reply_text(
-                scenes[scene_story]['intro']
+                query.data
             )
+            
+            intro = scenes[scene_story]['intro'].split("|")
 
-            await query.message.reply_text(
-                scenes[scene_story]['story'], 
-                reply_markup=reply_markup
-            )
+            for intro_paragraph in intro:
+                
+                await query.message.reply_text(
+                    intro_paragraph
+                )
+                time.sleep(SLEEP_TIME)
+
+            story = scenes[scene_story]['story'].split("|")
+
+            for story_paragraph in story:
+                await query.message.reply_text(
+                    story_paragraph 
+                )
+                time.sleep(SLEEP_TIME)
+            
+            if scenes[scene_story]['option_1']['link'] != "" and scenes[scene_story]['option_2']['link'] != "":
+                await query.message.reply_text(
+                    "Whats next?", 
+                    reply_markup=reply_markup
+                )
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Displays info on how to use the bot."""
