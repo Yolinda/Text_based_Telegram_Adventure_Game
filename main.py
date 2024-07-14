@@ -7,14 +7,16 @@ import time
 import configparser
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+import telegram
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes
 
-## Configuration processing
-## Read parameters from config.ini
+""" Configuration Processing """
+# Read parameters from config.ini
 config = configparser.ConfigParser()
 config.read('config.ini')
 config.sections()
 
+# Set configurations to use in the file
 TELEGRAM_TOKEN = config['API_KEYS']['Telegram_token']
 SLEEP_TIME = int(config['DEFAULT']['Sleep_Time'])
 
@@ -34,7 +36,15 @@ with open(story_file, 'r') as myfile:
 # parse file
 scenes = json.loads(scene_story)
 
-# Enable logging
+#print(type(scenes['1']['intro']))
+#print(type(scenes['1']['option_2']))
+
+#data = "<class 'dict'>"
+#print(isinstance(data, dict) or isinstance(data, str))
+
+player_chat_id = ''
+
+""" Enable logging """
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -45,6 +55,10 @@ logger = logging.getLogger(__name__)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with three inline buttons attached."""
+
+    # Set the player chat id, which is needed to send images back to the player
+    global player_chat_id
+    player_chat_id = update.effective_chat.id
 
     for scene_story in scenes:
         if scene_story == '1':
@@ -61,9 +75,19 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             intro = scenes[scene_story]['intro'].split("|")
 
             for intro_paragraph in intro:
+                # Display image to uer
+                #await update.message.reply_photo(
+                #    photo=open('user_photo.jpg', 'rb')
+                #)
+
+                # Display video to user
+                #await update.message.reply_video(
+                #    video=open('video.mp4', 'rb')
+                #)
 
                 await update.message.reply_text(
-                    intro_paragraph
+                    intro_paragraph,
+                    parse_mode=telegram.constants.ParseMode.HTML
                 )
                 time.sleep(SLEEP_TIME)
 
@@ -72,7 +96,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             for story_paragraph in story:
 
                 await update.message.reply_text(
-                    story_paragraph
+                    story_paragraph,
+                    parse_mode=telegram.constants.ParseMode.HTML
                 )
 
                 time.sleep(SLEEP_TIME)
@@ -80,7 +105,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             if scenes[scene_story]['option_1']['link'] != "" and scenes[scene_story]['option_2']['link'] != "":
                 await update.message.reply_text(
                     "What next?", 
-                    reply_markup=reply_markup
+                    reply_markup=reply_markup,
+                    parse_mode=telegram.constants.ParseMode.HTML
                 )
             
 async def game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -94,7 +120,6 @@ async def game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await query.answer()
 
     # Create the various scenes
-    """ Section A: Explore the Cell """
     #if query.data == "scene_1":
     display_scene = query.data
 
@@ -119,7 +144,8 @@ async def game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             for intro_paragraph in intro:
                 
                 await query.message.reply_text(
-                    intro_paragraph
+                    intro_paragraph,
+                    parse_mode=telegram.constants.ParseMode.HTML
                 )
                 time.sleep(SLEEP_TIME)
 
@@ -127,14 +153,16 @@ async def game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
             for story_paragraph in story:
                 await query.message.reply_text(
-                    story_paragraph 
+                    story_paragraph,
+                    parse_mode=telegram.constants.ParseMode.HTML
                 )
                 time.sleep(SLEEP_TIME)
             
             if scenes[scene_story]['option_1']['link'] != "" and scenes[scene_story]['option_2']['link'] != "":
                 await query.message.reply_text(
                     "Whats next?", 
-                    reply_markup=reply_markup
+                    reply_markup=reply_markup,
+                    parse_mode=telegram.constants.ParseMode.HTML
                 )
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
