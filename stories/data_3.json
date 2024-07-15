@@ -1,0 +1,48 @@
+{
+    "1": {
+        "intro": "Introduction of scene 1",
+        "story": "Story of scene 1",
+        "options": {
+            "1": {
+                "text": "Link text",
+                "link": "LINK"
+            },
+            "2": {
+                "text": "Link text",
+                "link": "LINK"
+            }
+        }
+    },
+    "2": {
+        "intro": [
+            "intro first",
+            "intro second"
+        ],
+        "story": [
+            "First paragraph",
+            "Second paragraph",
+            "Third paragraph"
+        ]
+    },
+    "3": {
+        "intro": {
+            "1": "intro first",
+            "2": "intro second"
+        },
+        "story": "This is the story",
+        "options": {
+            "1": {
+                "text": "This is the text",
+                "link": "This is the link"
+            },
+            "2": {
+                "text": "This is the text",
+                "link": "This is the link"
+            },
+            "3": {
+                "text": "This is the text",
+                "link": "This is the link"
+            }
+        }
+    }
+}
