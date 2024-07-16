@@ -1,6 +1,6 @@
 {
     "1": {
-        "intro": "Introduction of scene 1",
+        "intro": "<b>Introduction</b> of scene 1",
         "story": "Story of scene 1",
         "options": {
             "1": {

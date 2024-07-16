@@ -38,17 +38,12 @@ with open(story_file, 'r') as fullStory:
     scene_story = fullStory.read()
 scenes = json.loads(scene_story)
 
-"""-------------------------------------------------------
-# LOGGING
-# Enable Logging
--------------------------------------------------------"""
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-# set higher logging level for httpx to avoid all GET and POST requests being logged
-logging.getLogger("httpx").setLevel(logging.WARNING)
+# Define scene number
+__scene_number = str('3')
 
-logger = logging.getLogger(__name__)
+if isinstance(scenes[__scene_number]['intro'], list) == True:
+    for paragraph in scenes[__scene_number]['intro']:
+        print(paragraph)
 
 """-------------------------------------------------------
 # GAME FUNCTIONS
@@ -58,25 +53,70 @@ async def __game_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     # Start of the Game
     # Read the content from the first record in the file
     """
-    __scene_number = str('2')
+    keyboard = [
+                [
+                    InlineKeyboardButton("Option 1", callback_data="1"),
+                    InlineKeyboardButton("Option 2", callback_data="2")
+                ]
+            ]
 
-    # Execute if string
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
     if isinstance(scenes[__scene_number]['intro'], str) == True:
         await update.message.reply_text(
             scenes[__scene_number]['intro'],
             parse_mode=telegram.constants.ParseMode.HTML
         )
-    # Execute if list
+
     elif isinstance(scenes[__scene_number]['intro'], list) == True:
         for paragraph in scenes[__scene_number]['intro']:
-            print(scenes[__scene_number]['intro'][paragraph])
+            await update.message.reply_text(
+                paragraph,
+                parse_mode=telegram.constants.ParseMode.HTML
+            )
+    elif isinstance(scenes[__scene_number]['intro'], dict) == True:
+        for paragraph in scenes[__scene_number]['intro']:
+            await update.message.reply_text(
+                scenes[__scene_number]['intro'][paragraph],
+                parse_mode=telegram.constants.ParseMode.HTML
+            )
+    
+    await update.message.reply_text(
+        "What's Next?",
+        parse_mode=telegram.constants.ParseMode.HTML,
+        reply_markup=reply_markup,
+    )
 
+async def __play_game(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    # Get the option selected by the player
+    query = update.callback_query
 
-def __read_file(scene: str='3', scene_section: str='intro') -> None:
-    __story = None
-    file = open('stories/data_3.json')
-    __story = json.load(file)
-    return __story
+    # CallbackQueries need to be answered, even if no notification to the user is needed
+    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
+    await query.answer()
+
+    # Create the various scenes
+    #if query.data == "scene_1":
+    __scene_number = query.data
+
+    if isinstance(scenes[__scene_number]['story'], str) == True:
+        await update.message.reply_text(
+            scenes[__scene_number]['story'],
+            parse_mode=telegram.constants.ParseMode.HTML
+        )
+
+    elif isinstance(scenes[__scene_number]['story'], list) == True:
+        for paragraph in scenes[__scene_number]['story']:
+            await update.message.reply_text(
+                paragraph,
+                parse_mode=telegram.constants.ParseMode.HTML
+            )
+    elif isinstance(scenes[__scene_number]['story'], dict) == True:
+        for paragraph in scenes[__scene_number]['story']:
+            await update.message.reply_text(
+                scenes[__scene_number]['intro'][paragraph],
+                parse_mode=telegram.constants.ParseMode.HTML
+            )
 
 def main() -> None:
     """
@@ -85,11 +125,8 @@ def main() -> None:
     # Create the application and pass it your bot's token
     application = Application.builder().token(TELEGRAM_TOKEN).build()
 
-    __read_file()
-
-    print("FUCK!")
-
     application.add_handler(CommandHandler("start", __game_start))
+    application.add_handler(CallbackQueryHandler(__play_game))
 
 # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)
