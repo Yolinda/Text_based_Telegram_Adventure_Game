@@ -5,11 +5,11 @@
         "options": {
             "1": {
                 "text": "Link text",
-                "link": "LINK"
+                "link": "1"
             },
             "2": {
                 "text": "Link text",
-                "link": "LINK"
+                "link": "2"
             }
         }
     },
@@ -22,7 +22,17 @@
             "First paragraph",
             "Second paragraph",
             "Third paragraph"
-        ]
+        ],
+        "options": {
+            "1": {
+                "text": "Link text",
+                "link": "1"
+            },
+            "2": {
+                "text": "Link text",
+                "link": "2"
+            }
+        }
     },
     "3": {
         "intro": {
@@ -32,16 +42,12 @@
         "story": "This is the story",
         "options": {
             "1": {
-                "text": "This is the text",
-                "link": "This is the link"
+                "text": "Link text",
+                "link": "1"
             },
             "2": {
-                "text": "This is the text",
-                "link": "This is the link"
-            },
-            "3": {
-                "text": "This is the text",
-                "link": "This is the link"
+                "text": "Link text",
+                "link": "2"
             }
         }
     }

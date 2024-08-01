@@ -1,38 +1,54 @@
 {
     "1": {
-            "intro":"<b>bold</b> <i>italic</i> <a href='http://google.com'>link</a>.",
-            "story":"Scene info",
-            "option_1": {
-                "text": "Go to scene 1",
+        "intro": "<b>Introduction</b> of scene 1",
+        "story": "Story of scene 1",
+        "options": {
+            "1": {
+                "text": "Link text",
                 "link": "1"
             },
-            "option_2": {
-                "text": "Go to scene 2",
+            "2": {
+                "text": "Link text",
                 "link": "2"
             }
+        }
     },
     "2": {
-            "intro":"What?",
-            "story":"Scene 2",
-            "option_1": {
-                "text": "Go to scene 1",
+        "intro": [
+            "intro first",
+            "intro second"
+        ],
+        "story": [
+            "First paragraph",
+            "Second paragraph",
+            "Third paragraph"
+        ],
+        "options": {
+            "1": {
+                "text": "Link text",
                 "link": "1"
             },
-            "option_2": {
-                "text": "Go to scene 3",
-                "link": "3"
-            }
-    },
-    "3": {
-            "intro":"Scene 3 introduction",
-            "story":"Scene 3",
-            "option_1": {
-                "text": "Scene 1",
-                "link": "1"
-            },
-            "option_2": {
-                "text": "Scene 2",
+            "2": {
+                "text": "Link text",
                 "link": "2"
             }
+        }
+    },
+    "3": {
+        "intro": {
+            "1": "intro first",
+            "2": "intro second"
+        },
+        "story": "This is the story",
+        "options": {
+            "1": {
+                "text": "Link text",
+                "link": "1"
+            },
+            "2": {
+                "text": "Link text",
+                "link": "2"
+            }
+        }
     }
 }

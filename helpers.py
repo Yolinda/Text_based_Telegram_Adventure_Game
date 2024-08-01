@@ -23,10 +23,10 @@ def __select_story_file() -> None:
     """
         Select a story file 
     """
-    directory = os.listdir(__read_config(section='DEFAULT', item='Stories_path'))
+    directory = os.listdir('stories/')
     number_of_files = len(directory)
     # random_number = str(random.randint(1, number_of_files))
     random_number = str(3)
-    path = str(__read_config(section='DEFAULT', item='Stories_path'))
+    path = str('stories/')
     story_file = str( path + 'data_' + random_number + '.json')
     return story_file
